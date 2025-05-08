@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -33,6 +34,21 @@ public class ProductController {
     @GetMapping("/sku/{sku}")
     public ResponseEntity<ProductDto> findBySku(@PathVariable String sku) throws ProductNotFoundException {
         return ResponseEntity.ok(service.findBySku(sku));
+    }
+    
+    @GetMapping("/sku")
+    public ResponseEntity<List<ProductDto>> findBySkus(@RequestParam List<String> skus) {
+        List<ProductDto> products = skus.stream()
+                .map(sku -> {
+                    try {
+                        return service.findBySku(sku);
+                    } catch (ProductNotFoundException e) {
+                        throw new RuntimeException("Produto com SKU " + sku + " não encontrado.");
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping

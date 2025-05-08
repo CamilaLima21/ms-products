@@ -13,7 +13,7 @@ public class ProductMapper {
 		return new Product(
 				entity.getId(),
 				entity.getName(),
-				entity.getSku(),
+				entity.getProductSku(),
 				entity.getPrice()
 		);
 	}
@@ -21,7 +21,7 @@ public class ProductMapper {
 	public ProductEntity toEntity(Product domain) {
 		ProductEntity entity = new ProductEntity();
 		entity.setName(domain.getName());
-		entity.setSku(domain.getSku());
+		entity.setProductSku(domain.getProductSku());
 		entity.setPrice(domain.getPrice());
 		return entity;
 	}
@@ -30,7 +30,7 @@ public class ProductMapper {
         return new ProductDto(
                 domain.getId(),
                 domain.getName(),
-                domain.getSku(),
+                domain.getProductSku(),
                 domain.getPrice()
         );
     }
@@ -39,7 +39,7 @@ public class ProductMapper {
         return new Product(
                 dto.id(),
                 dto.name(),
-                dto.sku(),
+                dto.productSku(),
                 dto.price()
         );
     }
@@ -48,14 +48,14 @@ public class ProductMapper {
         return new ProductDto(
         		entity.getId(), 
         		entity.getName(), 
-        		entity.getSku(), 
+        		entity.getProductSku(), 
         		entity.getPrice());
     }
 
     public ProductEntity toEntity(ProductDto dto) {
         ProductEntity entity = new ProductEntity();
         entity.setName(dto.name());
-        entity.setSku(dto.sku());
+        entity.setProductSku(dto.productSku());
         entity.setPrice(dto.price());
         return entity;
     }

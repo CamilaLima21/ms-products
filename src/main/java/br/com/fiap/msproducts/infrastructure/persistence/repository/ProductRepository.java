@@ -1,13 +1,13 @@
 package br.com.fiap.msproducts.infrastructure.persistence.repository;
 
-import br.com.fiap.msproducts.infrastructure.persistence.entity.ProductEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import br.com.fiap.msproducts.infrastructure.persistence.entity.ProductEntity;
+
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
-    
-	Optional<ProductEntity> findBySku(String sku);
-    
-	boolean existsBySku(String sku);
+    Optional<ProductEntity> findByProductSku(String productSku); // Corrigido
+    boolean existsByProductSku(String productSku);              // Corrigido
+    List<ProductEntity> findAllByProductSkuIn(List<String> productSkus); // Corrigido
 }

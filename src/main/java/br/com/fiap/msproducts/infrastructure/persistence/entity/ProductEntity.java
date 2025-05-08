@@ -1,5 +1,7 @@
 package br.com.fiap.msproducts.infrastructure.persistence.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,10 +28,10 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String sku;
+    @Column(name = "product_sku", nullable = false, unique = true) // Garantindo que o nome da coluna seja 'product_sku' no banco
+    private String productSku;
 
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
     
 }

@@ -2,6 +2,8 @@ package br.com.fiap.msproducts.infrastructure.persistence.entity;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductEntityTest {
@@ -11,13 +13,13 @@ class ProductEntityTest {
         Long id = 1L;
         String name = "Test Product";
         String sku = "SKU123";
-        Double price = 49.99;
+        BigDecimal price = BigDecimal.valueOf(49.99); // CORRIGIDO
 
         ProductEntity entity = new ProductEntity(id, name, sku, price);
 
         assertEquals(id, entity.getId());
         assertEquals(name, entity.getName());
-        assertEquals(sku, entity.getSku());
+        assertEquals(sku, entity.getProductSku());
         assertEquals(price, entity.getPrice());
     }
 
@@ -26,13 +28,14 @@ class ProductEntityTest {
         ProductEntity entity = new ProductEntity();
         entity.setId(2L);
         entity.setName("Mouse Gamer");
-        entity.setSku("SKU456");
-        entity.setPrice(199.90);
+        entity.setProductSku("SKU456");
+        BigDecimal price = BigDecimal.valueOf(199.90); // CORRIGIDO
+        entity.setPrice(price);
 
         assertEquals(2L, entity.getId());
         assertEquals("Mouse Gamer", entity.getName());
-        assertEquals("SKU456", entity.getSku());
-        assertEquals(199.90, entity.getPrice());
+        assertEquals("SKU456", entity.getProductSku());
+        assertEquals(price, entity.getPrice());
     }
 
     @Test
@@ -40,12 +43,12 @@ class ProductEntityTest {
         ProductEntity entity = new ProductEntity();
         entity.setId(null);
         entity.setName(null);
-        entity.setSku(null);
+        entity.setProductSku(null);
         entity.setPrice(null);
 
         assertNull(entity.getId());
         assertNull(entity.getName());
-        assertNull(entity.getSku());
+        assertNull(entity.getProductSku());
         assertNull(entity.getPrice());
     }
 }

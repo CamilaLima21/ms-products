@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -43,21 +44,21 @@ class ProductControllerTest {
     @Test
     @DisplayName("GET /products deve retornar todos os produtos")
     void shouldReturnAllProducts() throws Exception {
-        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", 99.90);
+        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", BigDecimal.valueOf(99.90));
         when(service.findAll()).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is("Product A")))
-                .andExpect(jsonPath("$[0].sku", is("SKU123")))
+                .andExpect(jsonPath("$[0].productSku", is("SKU123"))) // Correção: alterado para 'productSku'
                 .andExpect(jsonPath("$[0].price", is(99.90)));
     }
 
     @Test
     @DisplayName("GET /products/{id} deve retornar produto por ID")
     void shouldReturnProductById() throws Exception {
-        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", 99.90);
+        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", BigDecimal.valueOf(99.90));
         when(service.findById(1L)).thenReturn(dto);
 
         mockMvc.perform(get("/products/1"))
@@ -68,19 +69,19 @@ class ProductControllerTest {
     @Test
     @DisplayName("GET /products/sku/{sku} deve retornar produto por SKU")
     void shouldReturnProductBySku() throws Exception {
-        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", 99.90);
+        ProductDto dto = new ProductDto(1L, "Product A", "SKU123", BigDecimal.valueOf(99.90));
         when(service.findBySku("SKU123")).thenReturn(dto);
 
         mockMvc.perform(get("/products/sku/SKU123"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sku", is("SKU123")));
+                .andExpect(jsonPath("$.productSku", is("SKU123"))); // Correção: alterado para 'productSku'
     }
 
     @Test
     @DisplayName("POST /products deve criar um produto")
     void shouldCreateProduct() throws Exception {
-        ProductDto dto = new ProductDto(0L, "New Product", "SKU999", 49.90);
-        ProductDto created = new ProductDto(1L, "New Product", "SKU999", 49.90);
+        ProductDto dto = new ProductDto(0L, "New Product", "SKU999", BigDecimal.valueOf(49.90));
+        ProductDto created = new ProductDto(1L, "New Product", "SKU999", BigDecimal.valueOf(49.90));
         when(service.create(any())).thenReturn(created);
 
         mockMvc.perform(post("/products")
@@ -88,13 +89,13 @@ class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.sku", is("SKU999")));
+                .andExpect(jsonPath("$.productSku", is("SKU999"))); // Correção: alterado para 'productSku'
     }
 
     @Test
     @DisplayName("PUT /products/{id} deve atualizar um produto")
     void shouldUpdateProduct() throws Exception {
-        ProductDto dto = new ProductDto(1L, "Updated Product", "SKU123", 79.90);
+        ProductDto dto = new ProductDto(1L, "Updated Product", "SKU123", BigDecimal.valueOf(79.90));
         when(service.update(eq(1L), any())).thenReturn(dto);
 
         mockMvc.perform(put("/products/1")
@@ -117,10 +118,11 @@ class ProductControllerTest {
     @Test
     @DisplayName("GET /products/{id} deve retornar 404 se produto não encontrado")
     void shouldReturn404WhenProductNotFound() throws Exception {
-        when(service.findById(99L)).thenThrow(new ProductNotFoundException("Product not found."));
+        when(service.findById(99L)).thenThrow(new ProductNotFoundException("Product with ID 99 not found."));
 
         mockMvc.perform(get("/products/99"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", is("Product not found.")));
+                .andExpect(jsonPath("$.message", is("Product with ID 99 not found.")));
     }
+
 }

@@ -23,7 +23,7 @@ public class ProductService {
     }
 
     public ProductDto create(ProductDto dto) {
-        if (repository.existsBySku(dto.sku())) {
+        if (repository.existsByProductSku(dto.productSku())) {
             throw new IllegalArgumentException("SKU already registered.");
         }
 
@@ -64,8 +64,23 @@ public class ProductService {
     }
 
     public ProductDto findBySku(String sku) throws ProductNotFoundException {
-        ProductEntity entity = repository.findBySku(sku)
+        ProductEntity entity = repository.findByProductSku(sku)
                 .orElseThrow(() -> new ProductNotFoundException("Product with SKU " + sku + " not found."));
         return mapper.toDto(mapper.toDomain(entity));
+    }
+    
+    public void validateSkus(List<String> skus) {
+        List<String> existingSkus = repository.findAllByProductSkuIn(skus)
+                .stream()
+                .map(ProductEntity::getProductSku)
+                .toList();
+
+        List<String> notFoundSkus = skus.stream()
+                .filter(sku -> !existingSkus.contains(sku))
+                .toList();
+
+        if (!notFoundSkus.isEmpty()) {
+            throw new ProductNotFoundException("The following SKUs were not found: " + notFoundSkus);
+        }
     }
 }

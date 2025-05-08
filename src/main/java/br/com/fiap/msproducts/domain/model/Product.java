@@ -1,5 +1,7 @@
 package br.com.fiap.msproducts.domain.model;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +11,7 @@ public class Product {
 	
 	private long id;
 	private String name;
-	private String sku;
-	private Double price;
+	private String productSku;
+	private BigDecimal price;
 
 }
